@@ -106,10 +106,10 @@
     console.log("Unified API response:", data);
     const stats = data.data;
 
-    const liquidity = parseFloat(stats.liquidity_usd || stats.total_liquidity_usd || stats.liquidity || 0);
-    const marketCap = parseFloat(stats.marketCap_usd || stats.marketCapUsd || 0);
-    const ath = parseFloat(stats.ath_usd || stats.ath || 0);
-    const ageDays = parseInt(stats.age_days || stats.age || 0);
+    const liquidity = parseFloat(stats.liquidity_usd || 0);
+    const marketCap = parseFloat(stats.market_cap_usd || 0);
+    const ath = parseFloat(stats.ath_usd || 0);
+    const ageDays = parseInt(stats.age_days || 0);
 
     animateValue("liquidity", 0, liquidity, 1500);
     animateValue("marketCap", 0, marketCap, 1500);
@@ -118,9 +118,9 @@
   })
   .catch(err => {
     console.error("Failed to fetch unified stats:", err);
-    document.getElementById("liquidity").textContent = "$0";
-    document.getElementById("marketCap").textContent = "$0";
-    document.getElementById("ath").textContent = "$0";
+    document.getElementById("liquidity").textContent = "0";
+    document.getElementById("marketCap").textContent = "0";
+    document.getElementById("ath").textContent = "0";
     document.getElementById("age").textContent = "0d";
   });
 </script>
