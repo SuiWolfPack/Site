@@ -112,8 +112,8 @@
     const totalSupply = 1000000000;
     const marketCap = price * totalSupply;
 
-    animateValue("liquidity", 0, liquidity, 1500, "$");
-    animateValue("marketCap", 0, marketCap, 1500, "$");
+    animateValue("liquidity", 0, liquidity, 1500);
+    animateValue("marketCap", 0, marketCap, 1500);
   })
   .catch(err => {
     console.error("Error fetching price/liquidity:", err);
