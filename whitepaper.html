@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>$WOLF Whitepaper</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
@@ -20,38 +20,40 @@
     }
 
     .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 40px 20px;
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 40px 30px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 12px;
       box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
 
     .header-image {
       width: 150px;
-      max-width: 100%;
       display: block;
       margin: 0 auto 20px auto;
     }
 
     h1 {
       font-size: 2.5em;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       color: #00fff7;
+      font-family: 'Poppins', sans-serif;
     }
 
     .typewriter {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 1.05rem;
-      color: white;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: #ffffff;
       text-align: left;
       white-space: pre-wrap;
-      margin-top: 30px;
-      line-height: 1.6;
+      margin: 0 auto;
+      line-height: 1.75;
+      max-width: 100%;
+      padding-left: 20px;
+      padding-right: 20px;
       border-left: 3px solid #00fff7;
-      padding-left: 15px;
       min-height: 300px;
     }
 
@@ -66,14 +68,16 @@
         font-size: 2em;
       }
       .typewriter {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        padding-left: 15px;
+        padding-right: 15px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="69C01E6C-77C2-4AEE-B2B4-487F6171FB0A.png" alt="$WOLF" class="header-image" />
+    <img src="wolf-head.png" alt="$WOLF" class="header-image" />
     <h1>$WOLF Whitepaper</h1>
     <div class="typewriter" id="whitepaperText"></div>
     <footer>RUN WITH THE PACK <br><code>© 2025 Sui Wolf Pack - Stay loyal, stay wild.🐺</code></footer>
@@ -81,23 +85,34 @@
 
   <script>
     const text = `
-Welcome to the official whitepaper for $WOLF — the Sui Wolf Pack's digital heart.
+Welcome to the official whitepaper for $WOLF — the Sui Wolf Pack's digital heartbeat.
 
-Born on-chain and forged by community, $WOLF is more than a meme — it's a movement.
-No dev wallet. No pre-sale. No promises. Just pack power.
+Built on strength, loyalty, and transparency, $WOLF is more than just a meme coin — it's a decentralized movement.
 
-We believe decentralization isn't a buzzword — it's the standard.
-That's why we're building a fully on-chain governance dApp that rewards loyalty, not influence.
+🧬 Philosophy:
+$WOLF is owned by the community. There was no pre-sale, no dev wallet, and no early insider advantage.
+We believe in equal footing, open development, and transparent tools.
 
-⚙️ In development:
-- DAO platform powered by Moonbags staking. Users who stake $WOLF gain 2x voting power and earn revenue share.
-  
-📊 In testing:
-- A custom-built Volume Bot designed to amplify organic market flow and alert the pack to sudden momentum shifts.
+🚨🚧IN DEVELOPMENT🚧🚨
 
-Everything we do is transparent. Everything we build is open-source.
+⚙️ DAO platform:
+- A fully on-chain DAO governance platform powered by Moonbags.
+  Members who stake $WOLF earn revenue share and receive 2x voting power.
+📊Volume bot:
+- A volume tracking bot currently in testing, designed to identify momentum,
+  support organic growth, and keep the pack ahead of the curve.
 
-No rugs. No bullshit. Just howls and hustle.
+The volume bot isn’t just for show — it generates real fees based from token activity.
+These fees are redistributed back into the $WOLF ecosystem in the following ways:
+  • 🔥 $WOLF burn events to reduce supply and increase scarcity.
+  • 🌱 Community-led project development.
+  • 🧠 DAO funding for governance, upgrades, and ecosystem proposals.
+  • 🎁 Pack rewards for active members and contributors.
+
+We don't follow trends — we set them.
+
+There’s no rugs, no fake hype, just utility, growth, and the relentless spirit of the pack.
+
     `.trim();
 
     const container = document.getElementById('whitepaperText');
