@@ -93,7 +93,7 @@
     requestAnimationFrame(step);
   }
 
-  // Fetch 1: Liquidity from /defi/price
+  // --- Fetch 1: Liquidity (working) ---
   fetch("https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=" + encodeURIComponent(tokenAddress), {
     method: "GET",
     headers: {
@@ -113,8 +113,8 @@
     document.getElementById("liquidity").textContent = "$0";
   });
 
-  // Fetch 2: ATH, market cap, age from /defi/token_overview
-  fetch("https://api-public.raidenx.io/sui/defi/token_overview?address=" + encodeURIComponent(tokenAddress), {
+  // --- Fetch 2: Market data from /meta-data/single ---
+  fetch("https://api-public.raidenx.io/sui/defi/v3/token/meta-data/single?address=" + encodeURIComponent(tokenAddress), {
     method: "GET",
     headers: {
       "Accept": "application/json",
@@ -123,22 +123,24 @@
   })
   .then(response => response.json())
   .then(data => {
-    console.log("Token Overview API response:", data);
+    console.log("Meta-data API response:", data);
     const stats = data.data;
 
-    const ATH = parseFloat(stats.ath_usd || stats.ath || 0);
-    const Marketcap = parseFloat(stats.market_cap_usd || stats.marketCap || 0);
-    const Age = parseInt(stats.age_days || stats.age || 0);
+    const ath = parseFloat(stats.ath_usd || stats.ath || 0);
+    const marketCap = parseFloat(stats.market_cap_usd || stats.marketCapUsd || stats.marketCap || 0);
 
-    document.getElementById("age").textContent = ageDays + "d";
+    // Age fallback if not found
+    const ageDays = parseInt(stats.age_days || stats.age || 0);
+
     animateValue("ath", 0, ath, 1500, "$");
     animateValue("marketCap", 0, marketCap, 1500, "$");
+    document.getElementById("age").textContent = ageDays + "d";
   })
   .catch(err => {
-    console.error("Failed to fetch token overview:", err);
-    document.getElementById("age").textContent = "0d";
+    console.error("Failed to fetch meta-data:", err);
     document.getElementById("ath").textContent = "$0";
     document.getElementById("marketCap").textContent = "$0";
+    document.getElementById("age").textContent = "0d";
   });
 </script>
 </body>
