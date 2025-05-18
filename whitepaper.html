@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>$WOLF Whitepaper</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       background-image: url('6574DB1D-9B64-4358-9F1A-152814BBD9D8.png');
@@ -24,9 +23,6 @@
       margin: 60px auto;
       padding: 40px 30px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
 
     .header-image {
@@ -98,7 +94,8 @@ We believe in equal footing, open development, and transparent tools.
 ⚙️ DAO platform:
 - A fully on-chain DAO governance platform powered by Moonbags.
   Members who stake $WOLF earn revenue share and receive 2x voting power.
-📊Volume bot:
+
+📊 Volume bot:
 - A volume tracking bot currently in testing, designed to identify momentum,
   support organic growth, and keep the pack ahead of the curve.
 
@@ -112,7 +109,6 @@ These fees are redistributed back into the $WOLF ecosystem in the following ways
 We don't follow trends — we set them.
 
 There’s no rugs, no fake hype, just utility, growth, and the relentless spirit of the pack.
-
     `.trim();
 
     const container = document.getElementById('whitepaperText');
@@ -122,7 +118,7 @@ There’s no rugs, no fake hype, just utility, growth, and the relentless spirit
       if (index < text.length) {
         container.textContent += text.charAt(index);
         index++;
-        const delay = text.charAt(index - 1) === "\n" ? 300 : 20;
+        const delay = text.charAt(index - 1) === "\n" ? 200 : 8;
         setTimeout(typeWriter, delay);
       }
     }
