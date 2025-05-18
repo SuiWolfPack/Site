@@ -6,11 +6,31 @@
   <title>Sui Wolf Pack - $WOLF</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .contract-address {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #1a1a1a;
+      color: #00fff7;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin: 10px auto 20px auto;
+      text-align: center;
+      font-size: 0.85rem;
+      word-break: break-all;
+      width: fit-content;
+      max-width: 90%;
+      box-shadow: 0 0 10px rgba(0, 255, 247, 0.2);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <img src="69C01E6C-77C2-4AEE-B2B4-487F6171FB0A.png" alt="$WOLF" class="header-image"/>
     <h1>Sui Wolf Pack<br>$WOLF</h1>
+    
+    <!-- Contract Address Section -->
+    <pre class="contract-address">0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF</pre>
+
     <h2>LOYAL. WILD. UNSTOPPABLE.</h2>
     <p class="description">
       Sui Wolf Pack is a fierce, community-driven meme coin built for those who run with the pack.<br>
@@ -31,6 +51,7 @@
       <h3>Market Stats</h3>
       <ul>
         <li>🌐 Sui @ Cetus</li>
+        <li>🏷️ Price: $<span id="price">...</span></li>
         <li>💲 Marketcap: $<span id="marketCap">...</span></li>
         <li>💧Liquidity: $<span id="liquidity">...</span></li>
       </ul>
@@ -108,20 +129,21 @@
     const liquidity = parseFloat(stats.liquidity || 0);
     const price = parseFloat(stats.value || 0);
 
-    // Use full total supply (no burned subtraction)
     const totalSupply = 1000000000;
     const marketCap = price * totalSupply;
 
+    animateValue("price", 0, price, 1500);
     animateValue("liquidity", 0, liquidity, 1500);
     animateValue("marketCap", 0, marketCap, 1500);
   })
   .catch(err => {
     console.error("Error fetching price/liquidity:", err);
+    document.getElementById("price").textContent = "$0.00";
     document.getElementById("liquidity").textContent = "$0.00";
     document.getElementById("marketCap").textContent = "$0.00";
   });
 
-  // Second fetch: ATH and Age
+  // Second fetch: ATH and Age (optional future extension)
   fetch(`https://api-public.raidenx.io/sui/defi/token_overview?address=${encodeURIComponent(tokenAddress)}`, {
     method: "GET",
     headers: {
