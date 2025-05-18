@@ -30,9 +30,9 @@
     <div class="section">
       <h3>Market Stats</h3>
       <ul>
-        <li>🌐 Sui @ Cetus | 🕰️ Age: <span id="age">...</span></li>
-        <li>📊 ATH: $<span id="ath">...</span></li>
-        <li>💲 Marketcap: $<span id="marketCap">...</span> | Liquidity: $<span id="liquidity">...</span>💧</li>
+        <li>🌐 Sui @ Cetus | 🕰️ Age: <span id="Age">...</span></li>
+        <li>📊 ATH: $<span id="ATH">...</span></li>
+        <li>💲 Marketcap: $<span id="Marketcap">...</span> | Liquidity: $<span id="liquidity">...</span>💧</li>
       </ul>
     </div>
 
@@ -126,9 +126,9 @@
     console.log("Token Overview API response:", data);
     const stats = data.data;
 
-    const ath = parseFloat(stats.ath_usd || stats.ath || 0);
-    const marketCap = parseFloat(stats.market_cap_usd || stats.marketCap || 0);
-    const ageDays = parseInt(stats.age_days || stats.age || 0);
+    const ATH = parseFloat(stats.ath_usd || stats.ath || 0);
+    const Marketcap = parseFloat(stats.market_cap_usd || stats.marketCap || 0);
+    const Age = parseInt(stats.age_days || stats.age || 0);
 
     document.getElementById("age").textContent = ageDays + "d";
     animateValue("ath", 0, ath, 1500, "$");
