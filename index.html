@@ -30,9 +30,9 @@
     <div class="section">
       <h3>Market Stats</h3>
       <ul>
-        <li>🌐 Sui @ Cetus | 🕰️ Age: <span id="Age">...</span></li>
-        <li>📊 ATH: $<span id="ATH">...</span></li>
-        <li>💲 Marketcap: $<span id="Marketcap">...</span> | Liquidity: $<span id="liquidity">...</span>💧</li>
+        <li>🌐 Sui @ Cetus | 🕰️ Age: <span id="age">...</span></li>
+        <li>📊 ATH: $<span id="ath">...</span></li>
+        <li>💲 Marketcap: $<span id="marketCap">...</span> | Liquidity: $<span id="liquidity">...</span>💧</li>
       </ul>
     </div>
 
@@ -106,7 +106,7 @@
     console.log("Liquidity API response:", data);
     const stats = data.data;
     const liquidity = parseFloat(stats.liquidity_usd || stats.total_liquidity_usd || stats.liquidity || 0);
-    animateValue("liquidity", 0, liquidity, 1500, "$");
+    animateValue("liquidity", 0, liquidity, 1500);
   })
   .catch(err => {
     console.error("Failed to fetch liquidity:", err);
@@ -132,8 +132,8 @@
     // Age fallback if not found
     const ageDays = parseInt(stats.age_days || stats.age || 0);
 
-    animateValue("ath", 0, ath, 1500, "$");
-    animateValue("marketCap", 0, marketCap, 1500, "$");
+    animateValue("ath", 0, ath, 1500);
+    animateValue("marketCap", 0, marketCap, 1500);
     document.getElementById("age").textContent = ageDays + "d";
   })
   .catch(err => {
