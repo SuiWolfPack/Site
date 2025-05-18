@@ -79,11 +79,14 @@
       requestAnimationFrame(step);
     }
 
-    fetch("https://api-public.raidenx.io/sui/defi/token_overview", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: tokenId })
-    })
+fetch("https://api-public.raidenx.io/sui/defi/token_overview", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4"
+  },
+  body: JSON.stringify({ id: tokenId })
+})
     .then(res => res.json())
     .then(data => {
       const stats = data.data;
