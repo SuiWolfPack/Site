@@ -89,10 +89,11 @@
         requestAnimationFrame(step);
       }
     }
+
     requestAnimationFrame(step);
   }
 
-  // First fetch: Liquidity
+  // Fetch 1: Liquidity from /defi/price
   fetch("https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=" + encodeURIComponent(tokenAddress), {
     method: "GET",
     headers: {
@@ -104,7 +105,6 @@
   .then(data => {
     console.log("Liquidity API response:", data);
     const stats = data.data;
-
     const liquidity = parseFloat(stats.liquidity_usd || stats.total_liquidity_usd || stats.liquidity || 0);
     animateValue("liquidity", 0, liquidity, 1500, "$");
   })
@@ -113,8 +113,8 @@
     document.getElementById("liquidity").textContent = "$0";
   });
 
-  // Second fetch: Market data (ATH, market cap, age)
-  fetch("https://api-public.raidenx.io/sui/defi/v3/token/market-data?address=" + encodeURIComponent(tokenAddress), {
+  // Fetch 2: ATH, market cap, age from /defi/token_overview
+  fetch("https://api-public.raidenx.io/sui/defi/token_overview?address=" + encodeURIComponent(tokenAddress), {
     method: "GET",
     headers: {
       "Accept": "application/json",
@@ -123,19 +123,19 @@
   })
   .then(response => response.json())
   .then(data => {
-    console.log("Market Data API response:", data);
+    console.log("Token Overview API response:", data);
     const stats = data.data;
 
-    const ath = parseFloat(stats.ath_usd || 0);
-    const marketCap = parseFloat(stats.market_cap_usd || 0);
-    const ageDays = parseInt(stats.age_days || 0);
+    const ath = parseFloat(stats.ath_usd || stats.ath || 0);
+    const marketCap = parseFloat(stats.market_cap_usd || stats.marketCap || 0);
+    const ageDays = parseInt(stats.age_days || stats.age || 0);
 
     document.getElementById("age").textContent = ageDays + "d";
     animateValue("ath", 0, ath, 1500, "$");
     animateValue("marketCap", 0, marketCap, 1500, "$");
   })
   .catch(err => {
-    console.error("Failed to fetch market data:", err);
+    console.error("Failed to fetch token overview:", err);
     document.getElementById("age").textContent = "0d";
     document.getElementById("ath").textContent = "$0";
     document.getElementById("marketCap").textContent = "$0";
