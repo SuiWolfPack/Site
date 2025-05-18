@@ -7,57 +7,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <style>
-    .contract-address-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: nowrap;
-      gap: 10px;
+   .contract-address {
+      font-family: 'Courier New', Courier, monospace;
       background-color: #1a1a1a;
+      color: #00fff7;
       padding: 12px 16px;
       border-radius: 8px;
       margin: 10px auto 20px auto;
-      max-width: 100%;
+      text-align: center;
+      font-size: 0.7rem;
       overflow-x: auto;
-      box-shadow: 0 0 10px rgba(0, 255, 247, 0.2);
-      position: relative;
-    }
-
-    .contract-address-container code {
-      font-family: 'Courier New', Courier, monospace;
-      color: #00fff7;
-      font-size: 0.7rem;
       white-space: nowrap;
-    }
-
-    .copy-btn {
-      font-family: inherit;
-      background-color: #00fff7;
-      border: none;
-      color: #000;
-      padding: 5px 10px;
-      border-radius: 5px;
+      max-width: 100%;
+      box-shadow: 0 0 10px rgba(0, 255, 247, 0.2);
+      box-sizing: border-box;
       cursor: pointer;
-      font-size: 0.7rem;
-      transition: background-color 0.3s;
+      user-select: none;
+      transition: background-color 0.2s ease;
     }
-
-    .copy-btn:hover {
-      background-color: #00c2bd;
-    }
-
-    .copy-message {
-      position: absolute;
-      top: -24px;
-      right: 16px;
-      background-color: #00c2bd;
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
+    .contract-address:hover {
+      background-color: #004f52;
     }
   </style>
 </head>
@@ -66,11 +35,8 @@
     <img src="69C01E6C-77C2-4AEE-B2B4-487F6171FB0A.png" alt="$WOLF" class="header-image"/>
     <h1>Sui Wolf Pack<br>$WOLF</h1>
 
-    <!-- Updated Contract Address Section -->
-    <div class="contract-address-container">
-      <code id="contractAddress">0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF</code>
-      <button class="copy-btn" onclick="copyCA()">Copy</button>
-      <span id="copyMessage" class="copy-message">Copied!</span>
+    <div class="contract-address" id="contractAddress" title="Click to copy">
+      0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF
     </div>
 
     <h2>LOYAL. WILD. UNSTOPPABLE.</h2>
@@ -126,17 +92,6 @@
   </div>
 
   <script>
-    function copyCA() {
-      const caText = document.getElementById("contractAddress").textContent;
-      navigator.clipboard.writeText(caText).then(() => {
-        const message = document.getElementById("copyMessage");
-        message.style.opacity = 1;
-        setTimeout(() => {
-          message.style.opacity = 0;
-        }, 1500);
-      });
-    }
-
     const tokenAddress = "0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF";
     const apiKey = "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4";
 
@@ -169,6 +124,7 @@
       requestAnimationFrame(step);
     }
 
+    // Fetch price & liquidity
     fetch(`https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=${encodeURIComponent(tokenAddress)}`, {
       method: "GET",
       headers: {
@@ -181,6 +137,7 @@
       const stats = data.data;
       const liquidity = parseFloat(stats.liquidity || 0);
       const price = parseFloat(stats.value || 0);
+
       const totalSupply = 1000000000;
       const marketCap = price * totalSupply;
 
@@ -195,6 +152,7 @@
       document.getElementById("marketCap").textContent = "$0.00";
     });
 
+    // Fetch ATH and Age
     fetch(`https://api-public.raidenx.io/sui/defi/token_overview?address=${encodeURIComponent(tokenAddress)}`, {
       method: "GET",
       headers: {
@@ -220,6 +178,22 @@
     })
     .catch(err => {
       console.error("Error fetching token overview:", err);
+    });
+
+    // Copy contract address on click with feedback
+    const contractAddressDiv = document.getElementById('contractAddress');
+
+    contractAddressDiv.addEventListener('click', () => {
+      const text = contractAddressDiv.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = contractAddressDiv.textContent;
+        contractAddressDiv.textContent = 'Copied!';
+        setTimeout(() => {
+          contractAddressDiv.textContent = originalText;
+        }, 1500);
+      }).catch(() => {
+        alert('Failed to copy contract address');
+      });
     });
   </script>
 </body>
