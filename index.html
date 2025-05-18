@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,9 +30,9 @@
     <div class="section">
       <h3>Market Stats</h3>
       <ul>
-        <li>🌐 Sui @ Cetus | 🕰️ Age: 23d</li>
-        <li>📊 ATH: $46.55K</li>
-        <li>💲 Marketcap: $6.7k | Liquidity: $6k💧</li>
+        <li>🌐 Sui @ Cetus | 🕰️ Age: <span id="age">...</span></li>
+        <li>📊 ATH: $<span id="ath">...</span></li>
+        <li>💲 Marketcap: $<span id="marketCap">...</span> | Liquidity: $<span id="liquidity">...</span>💧</li>
       </ul>
     </div>
 
@@ -52,14 +51,55 @@
       <p> <span class="highlight">AI Meme Generator -</span> Our community-built content generator is pumping out memes! <br> Join our Telegram and use the command:<br><code>/meme "your idea here"</code></p>
     </div>
 
-<div class="buttons">
-  <a href="https://moonbags.io/bondingcurve/coins/0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF" target="_blank" class="btn primary">STAKE</a>
-  <a href="https://raidenx.io/sui/cetus-wolf-sui-251001" target="_blank" class="btn primary">BUY $WOLF</a>
-  <a href="https://x.com/SuiWolfPack" target="_blank" class="btn secondary">FOLLOW US</a>
-  <a href="https://t.me/SuiWolfPack2" target="_blank" class="btn secondary">JOIN TELEGRAM</a>
-</div>
+    <div class="buttons">
+      <a href="https://moonbags.io/bondingcurve/coins/0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF" target="_blank" class="btn primary">STAKE</a>
+      <a href="https://raidenx.io/sui/cetus-wolf-sui-251001" target="_blank" class="btn primary">BUY $WOLF</a>
+      <a href="https://x.com/SuiWolfPack" target="_blank" class="btn secondary">FOLLOW US</a>
+      <a href="https://t.me/SuiWolfPack2" target="_blank" class="btn secondary">JOIN TELEGRAM</a>
+    </div>
 
     <footer>RUN WITH THE PACK <br><code>© 2025 Sui Wolf Pack - Stay loyal, stay wild.🐺</code></footer>
   </div>
+
+  <script>
+    const tokenId = "0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF";
+
+    function animateValue(id, start, end, duration, prefix = "", suffix = "") {
+      const range = end - start;
+      let startTime = null;
+      const element = document.getElementById(id);
+
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const value = Math.floor(start + progress * range);
+        element.textContent = prefix + value.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    fetch("https://api-public.raidenx.io/sui/defi/token_overview", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: tokenId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const stats = data.data;
+      document.getElementById("age").textContent = stats.age_days + "d";
+
+      const ath = parseFloat(stats.ath_usd || 0);
+      const marketCap = parseFloat(stats.market_cap_usd || 0);
+      const liquidity = parseFloat(stats.total_liquidity_usd || 0);
+
+      animateValue("ath", 0, Math.round(ath), 1500);
+      animateValue("marketCap", 0, Math.round(marketCap), 1500);
+      animateValue("liquidity", 0, Math.round(liquidity), 1500);
+    })
+    .catch(err => {
+      console.error("Failed to fetch RaidenX stats:", err);
+    });
+  </script>
 </body>
 </html>
