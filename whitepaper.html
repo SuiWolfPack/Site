@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>$WOLF Whitepaper</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <style>
     body {
       background-image: url('6574DB1D-9B64-4358-9F1A-152814BBD9D8.png');
@@ -23,12 +24,24 @@
       margin: 60px auto;
       padding: 40px 30px;
       text-align: center;
+      background: rgba(0, 0, 0, 0.0); /* No dark overlay */
+      border-radius: 12px;
     }
 
     .header-image {
       width: 150px;
       display: block;
       margin: 0 auto 20px auto;
+    }
+
+    .subheader {
+      font-size: 1.25em;
+      margin-bottom: 10px;
+      color: #00fff7;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     h1 {
@@ -74,6 +87,7 @@
 <body>
   <div class="container">
     <img src="69C01E6C-77C2-4AEE-B2B4-487F6171FB0A.png" alt="$WOLF" class="header-image" />
+    <h2 class="subheader">Phase: One</h2>
     <h1>$WOLF Whitepaper</h1>
     <div class="typewriter" id="whitepaperText"></div>
     <footer>RUN WITH THE PACK <br><code>© 2025 Sui Wolf Pack - Stay loyal, stay wild.🐺</code></footer>
@@ -118,7 +132,7 @@ There’s no rugs, no fake hype, just utility, growth, and the relentless spirit
       if (index < text.length) {
         container.textContent += text.charAt(index);
         index++;
-        const delay = text.charAt(index - 1) === "\n" ? 200 : 8;
+        const delay = text.charAt(index - 1) === "\n" ? 200 : 12; // faster speed
         setTimeout(typeWriter, delay);
       }
     }
