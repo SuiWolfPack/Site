@@ -95,7 +95,7 @@
     requestAnimationFrame(step);
   }
 
-  // First fetch for liquidity & price (to calculate market cap)
+  // First fetch: price & liquidity
   fetch(`https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=${encodeURIComponent(tokenAddress)}`, {
     method: "GET",
     headers: {
@@ -109,10 +109,9 @@
     const liquidity = parseFloat(stats.liquidity || 0);
     const price = parseFloat(stats.value || 0);
 
-    // Total supply = 1,000,000,000
-    // 7.41% burned = 92.59% circulating
-    const circulatingSupply = 1000000000 * 0.9259;
-    const marketCap = price * circulatingSupply;
+    // Use full total supply (no burned subtraction)
+    const totalSupply = 1000000000;
+    const marketCap = price * totalSupply;
 
     animateValue("liquidity", 0, liquidity, 1500, "$");
     animateValue("marketCap", 0, marketCap, 1500, "$");
@@ -123,7 +122,7 @@
     document.getElementById("marketCap").textContent = "$0.00";
   });
 
-  // Second fetch for ATH and Age
+  // Second fetch: ATH and Age
   fetch(`https://api-public.raidenx.io/sui/defi/token_overview?address=${encodeURIComponent(tokenAddress)}`, {
     method: "GET",
     headers: {
