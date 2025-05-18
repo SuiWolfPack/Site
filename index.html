@@ -65,87 +65,66 @@
   const tokenAddress = "0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF";
 
   function animateValue(id, start, end, duration, prefix = "", suffix = "") {
-    const range = end - start;
-    let startTime = null;
     const element = document.getElementById(id);
+    if (!element) return;
+
+    let startTime = null;
+    const range = end - start;
 
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const value = Math.floor(start + progress * range);
-      element.textContent = prefix + value.toLocaleString() + suffix;
-      if (progress < 1) requestAnimationFrame(step);
-    }
+      const value = start + progress * range;
 
+      // Display with decimals for floats, integer if large
+      let displayValue;
+      if (end < 1) {
+        displayValue = value.toFixed(4);
+      } else {
+        displayValue = Math.floor(value).toLocaleString();
+      }
+
+      element.textContent = prefix + displayValue + suffix;
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
     requestAnimationFrame(step);
   }
 
-  // Set fallback values
-  function setFallbacks() {
-    document.getElementById("age").textContent = "0d";
-    document.getElementById("ath").textContent = "0";
-    document.getElementById("marketCap").textContent = "0";
-    document.getElementById("liquidity").textContent = "0";
-  }
+  fetch("https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=" + encodeURIComponent(tokenAddress), {
+    method: "GET",
+    headers: {
+      "Accept": "application/json",
+      "X-Api-Key": "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4"
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("API response:", data); // <=== Add this to verify
 
-  // Fetch from endpoint 1 (general market data)
-  function fetchMarketData() {
-    return fetch(`https://api-public.raidenx.io/sui/defi/v3/token/market-data?address=${encodeURIComponent(tokenAddress)}`, {
-      headers: {
-        "Accept": "application/json",
-        "X-Api-Key": "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4"
-      }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Market data HTTP error! Status: ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      if (!data || !data.data) throw new Error("No market data in response");
-      return data.data;
-    });
-  }
+    if (!data || !data.data) {
+      console.error("No data found in API response");
+      return;
+    }
 
-  // Fetch from endpoint 2 (price & liquidity data)
-  function fetchPriceData() {
-    return fetch(`https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=${encodeURIComponent(tokenAddress)}`, {
-      headers: {
-        "Accept": "application/json",
-        "X-Api-Key": "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4"
-      }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Price data HTTP error! Status: ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      if (!data || !data.data) throw new Error("No price data in response");
-      return data.data;
-    });
-  }
+    const stats = data.data;
 
-  Promise.all([fetchMarketData(), fetchPriceData()])
-    .then(([marketData, priceData]) => {
-      console.log("Market Data:", marketData);
-      console.log("Price Data:", priceData);
+    // Try alternative keys if these fail
+    const ath = parseFloat(stats.ath_usd || stats.ath || 0);
+    const marketCap = parseFloat(stats.market_cap_usd || stats.marketCapUsd || 0);
+    const liquidity = parseFloat(stats.liquidity_usd || stats.total_liquidity_usd || stats.liquidity || 0);
+    const ageDays = parseInt(stats.age_days || stats.age || 0);
 
-      // Extract values safely from both responses
-      const ageDays = parseInt(marketData.age_days || 0);
-      const ath = parseFloat(marketData.ath_usd || 0);
-      const marketCap = parseFloat(marketData.market_cap_usd || 0);
-
-      // liquidity is from priceData endpoint
-      const liquidity = parseFloat(priceData.liquidity_usd || 0);
-
-      document.getElementById("age").textContent = ageDays + "d";
-      animateValue("ath", 0, Math.round(ath), 1500);
-      animateValue("marketCap", 0, Math.round(marketCap), 1500);
-      animateValue("liquidity", 0, Math.round(liquidity), 1500);
-    })
-    .catch(err => {
-      console.error("Failed to fetch data:", err);
-      setFallbacks();
-    });
+    document.getElementById("age").textContent = ageDays + "d";
+    animateValue("ath", 0, ath, 1500, "$");
+    animateValue("marketCap", 0, marketCap, 1500, "$");
+    animateValue("liquidity", 0, liquidity, 1500, "$");
+  })
+  .catch(err => {
+    console.error("Failed to fetch RaidenX stats:", err);
+  });
 </script>
 </body>
 </html>
