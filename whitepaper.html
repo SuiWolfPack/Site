@@ -24,7 +24,7 @@
       margin: 60px auto;
       padding: 40px 30px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.0); /* No dark overlay */
+      background: rgba(0, 0, 0, 0.0);
       border-radius: 12px;
     }
 
@@ -82,6 +82,27 @@
         padding-right: 15px;
       }
     }
+
+    .bullet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .bullet-item {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .bullet-icon {
+      margin-right: 10px;
+      line-height: 1.5;
+    }
+
+    .bullet-text {
+      flex: 1;
+    }
   </style>
 </head>
 <body>
@@ -114,11 +135,16 @@ We believe in equal footing, open development, and transparent tools.
   support organic growth, and keep the pack ahead of the curve.
 
 The volume bot isn’t just for show — it generates real fees based from token activity.
-These fees are redistributed back into the $WOLF ecosystem in the following ways:
-  • 🔥 $WOLF burn events to reduce supply and increase scarcity.
-  • 🌱 Community-led project development.
-  • 🧠 DAO funding for governance, upgrades, and ecosystem proposals.
-  • 🎁 Pack rewards for active members and contributors.
+These fees are redistributed back into the $WOLF ecosystem in the following ways:\n\n`;
+
+    const bulletPoints = [
+      { icon: "🔥", text: "$WOLF burn events to reduce supply and increase scarcity." },
+      { icon: "🌱", text: "Community-led project development." },
+      { icon: "🧠", text: "DAO funding for governance, upgrades, and ecosystem proposals." },
+      { icon: "🎁", text: "Pack rewards for active members and contributors." }
+    ];
+
+    const closing = `
 
 We don't follow trends — we set them.
 
@@ -132,8 +158,36 @@ There’s no rugs, no fake hype, just utility, growth, and the relentless spirit
       if (index < text.length) {
         container.textContent += text.charAt(index);
         index++;
-        const delay = text.charAt(index - 1) === "\n" ? 200 : 12; // faster speed
+        const delay = text.charAt(index - 1) === "\n" ? 200 : 12;
         setTimeout(typeWriter, delay);
+      } else {
+        // Insert bullet list once main text is typed
+        const list = document.createElement("div");
+        list.className = "bullet-list";
+        bulletPoints.forEach(({ icon, text }) => {
+          const item = document.createElement("div");
+          item.className = "bullet-item";
+
+          const iconEl = document.createElement("div");
+          iconEl.className = "bullet-icon";
+          iconEl.textContent = `• ${icon}`;
+
+          const textEl = document.createElement("div");
+          textEl.className = "bullet-text";
+          textEl.textContent = text;
+
+          item.appendChild(iconEl);
+          item.appendChild(textEl);
+          list.appendChild(item);
+        });
+
+        container.appendChild(list);
+
+        // Add closing text
+        const closingEl = document.createElement("div");
+        closingEl.style.marginTop = "20px";
+        closingEl.textContent = closing;
+        container.appendChild(closingEl);
       }
     }
 
