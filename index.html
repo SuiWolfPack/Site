@@ -94,98 +94,100 @@
     <footer>RUN WITH THE PACK <br><code>© 2025 Sui Wolf Pack - Stay loyal, stay wild.🐺</code></footer>
   </div>
 
-  <script>
-    const tokenAddress = "0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF";
-    const raidenApiKey = "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4";
+<script>
+  const tokenAddress = "0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF";
+  const raidenApiKey = "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4";
+  const blockvisionApiKey = "2xPrVQt7YJCnjBKHx8cj3q7rrVG";
 
-    function animateValue(id, start, end, duration, prefix = "", suffix = "") {
-      const element = document.getElementById(id);
-      if (!element) return;
+  function animateValue(id, start, end, duration, prefix = "", suffix = "") {
+    const element = document.getElementById(id);
+    if (!element) return;
+    let startTime = null;
+    const range = end - start;
 
-      let startTime = null;
-      const range = end - start;
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const value = start + progress * range;
 
-      function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        const value = start + progress * range;
-
-        let displayValue;
-        if (end < 1) {
-          displayValue = value.toFixed(6);
-        } else if (Number.isInteger(end)) {
-          displayValue = Math.floor(value).toLocaleString();
-        } else {
-          displayValue = value.toFixed(2);
-        }
-
-        element.textContent = prefix + displayValue + suffix;
-
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        }
+      let displayValue;
+      if (end < 1) {
+        displayValue = value.toFixed(6);
+      } else if (Number.isInteger(end)) {
+        displayValue = Math.floor(value).toLocaleString();
+      } else {
+        displayValue = value.toFixed(2);
       }
 
-      requestAnimationFrame(step);
+      element.textContent = prefix + displayValue + suffix;
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
     }
 
-    // Fetch price & liquidity from RaidenX
-    fetch(`https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=${encodeURIComponent(tokenAddress)}`, {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        "X-Api-Key": raidenApiKey
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      const stats = data.data;
-      const liquidity = parseFloat(stats.liquidity || 0);
-      animateValue("liquidity", 0, liquidity, 1500);
-    })
-    .catch(err => {
-      console.error("Error fetching liquidity:", err);
-      document.getElementById("liquidity").textContent = "$0.00";
-    });
+    requestAnimationFrame(step);
+  }
 
-    // Fetch other stats from Blockvision
-    fetch("https://eth-mainnet.blockvision.org/v1/2xPrVQt7YJCnjBKHx8cj3q7rrVG", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      const price = parseFloat(data.price || 0);
-      const marketCap = parseFloat(data.marketCap || 0);
-      const volume24H = parseFloat(data.volume24H || 0);
-      const change = parseFloat(data.priceChangePercentage24H || 0);
-      const holders = parseInt(data.holders || 0);
+  // ✅ Fetch price & liquidity from RaidenX
+  fetch(`https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=${encodeURIComponent(tokenAddress)}`, {
+    method: "GET",
+    headers: {
+      "Accept": "application/json",
+      "X-Api-Key": raidenApiKey
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const stats = data.data;
+    const liquidity = parseFloat(stats.liquidity || 0);
+    animateValue("liquidity", 0, liquidity, 1500);
+  })
+  .catch(err => {
+    console.error("RaidenX fetch failed:", err);
+    document.getElementById("liquidity").textContent = "$0.00";
+  });
 
-      animateValue("price", 0, price, 1500);
-      animateValue("marketCap", 0, marketCap, 1500);
-      animateValue("volume24H", 0, volume24H, 1500, "$", ` (${change.toFixed(2)}%)`);
-      animateValue("holders", 0, holders, 1500);
-    })
-    .catch(err => {
-      console.error("Blockvision fetch failed:", err);
-    });
+  // ✅ Fetch metrics from Blockvision
+  fetch("https://api.blockvision.org/v2/sui/coin/detail?coinType=0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560%3A%3Awolf%3A%3AWOLF", {
+    method: "GET",
+    headers: {
+      "accept": "application/json",
+      "x-api-key": blockvisionApiKey
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const result = data.result;
+    const price = parseFloat(result.price || 0);
+    const marketCap = parseFloat(result.marketCap || 0);
+    const volume24H = parseFloat(result.volume24H || 0);
+    const change = parseFloat(result.priceChangePercentage24H || 0);
+    const holders = parseInt(result.holders || 0);
 
-    // Copy contract address on click
-    const contractAddressDiv = document.getElementById('contractAddress');
-    contractAddressDiv.addEventListener('click', () => {
-      const text = contractAddressDiv.textContent.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = contractAddressDiv.textContent;
-        contractAddressDiv.textContent = 'Copied!';
-        setTimeout(() => {
-          contractAddressDiv.textContent = originalText;
-        }, 1500);
-      }).catch(() => {
-        alert('Failed to copy contract address');
-      });
+    animateValue("price", 0, price, 1500);
+    animateValue("marketCap", 0, marketCap, 1500);
+    animateValue("volume24H", 0, volume24H, 1500, "$", ` (${change.toFixed(2)}%)`);
+    animateValue("holders", 0, holders, 1500);
+  })
+  .catch(err => {
+    console.error("Blockvision fetch failed:", err);
+  });
+
+  // ✅ Click-to-copy contract address
+  const contractAddressDiv = document.getElementById('contractAddress');
+  contractAddressDiv.addEventListener('click', () => {
+    const text = contractAddressDiv.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const originalText = contractAddressDiv.textContent;
+      contractAddressDiv.textContent = 'Copied!';
+      setTimeout(() => {
+        contractAddressDiv.textContent = originalText;
+      }, 1500);
+    }).catch(() => {
+      alert('Failed to copy contract address');
     });
-  </script>
+  });
+</script>
 </body>
 </html>
