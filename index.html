@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <style>
-   .contract-address {
+    .contract-address {
       font-family: 'Courier New', Courier, monospace;
       background-color: #1a1a1a;
       color: #00fff7;
@@ -62,6 +62,8 @@
         <li>🌐 Sui @ Cetus</li>
         <li>🏷️ Price: $<span id="price">...</span></li>
         <li>💲 Marketcap: $<span id="marketCap">...</span></li>
+        <li>📈 Volume (24h): <span id="volume24H">...</span></li>
+        <li>👥 Holders: <span id="holders">...</span></li>
         <li>💧 Liquidity: $<span id="liquidity">...</span></li>
       </ul>
     </div>
@@ -94,7 +96,7 @@
 
   <script>
     const tokenAddress = "0x7396c4deb7e6cce3e38419563d22534f7c427786773b92d1c23751cdbae96560::wolf::WOLF";
-    const apiKey = "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4";
+    const raidenApiKey = "raidenX-047a72ed-ab8d-41db-a414-e51c41f7cde4";
 
     function animateValue(id, start, end, duration, prefix = "", suffix = "") {
       const element = document.getElementById(id);
@@ -110,9 +112,11 @@
 
         let displayValue;
         if (end < 1) {
-          displayValue = value.toFixed(6); // extended to 6 decimals
-        } else {
+          displayValue = value.toFixed(6);
+        } else if (Number.isInteger(end)) {
           displayValue = Math.floor(value).toLocaleString();
+        } else {
+          displayValue = value.toFixed(2);
         }
 
         element.textContent = prefix + displayValue + suffix;
@@ -125,65 +129,51 @@
       requestAnimationFrame(step);
     }
 
-    // Fetch price & liquidity
+    // Fetch price & liquidity from RaidenX
     fetch(`https://api-public.raidenx.io/sui/defi/price?includeLiquidity=true&address=${encodeURIComponent(tokenAddress)}`, {
       method: "GET",
       headers: {
         "Accept": "application/json",
-        "X-Api-Key": apiKey
+        "X-Api-Key": raidenApiKey
       }
     })
     .then(response => response.json())
     .then(data => {
       const stats = data.data;
       const liquidity = parseFloat(stats.liquidity || 0);
-      const price = parseFloat(stats.value || 0);
-
-      const totalSupply = 1000000000;
-      const marketCap = price * totalSupply;
-
-      animateValue("price", 0, price, 1500);
       animateValue("liquidity", 0, liquidity, 1500);
-      animateValue("marketCap", 0, marketCap, 1500);
     })
     .catch(err => {
-      console.error("Error fetching price/liquidity:", err);
-      document.getElementById("price").textContent = "$0.000000";
+      console.error("Error fetching liquidity:", err);
       document.getElementById("liquidity").textContent = "$0.00";
-      document.getElementById("marketCap").textContent = "$0.00";
     });
 
-    // Fetch ATH and Age
-    fetch(`https://api-public.raidenx.io/sui/defi/token_overview?address=${encodeURIComponent(tokenAddress)}`, {
+    // Fetch other stats from Blockvision
+    fetch("https://eth-mainnet.blockvision.org/v1/2xPrVQt7YJCnjBKHx8cj3q7rrVG", {
       method: "GET",
       headers: {
-        "Accept": "application/json",
-        "X-Api-Key": apiKey
+        "Content-Type": "application/json"
       }
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
-      const stats = data.data;
-      const ath = parseFloat(stats.ath || 0);
-      const ageUnix = parseInt(stats.createUnixTime || 0);
+      const price = parseFloat(data.price || 0);
+      const marketCap = parseFloat(data.marketCap || 0);
+      const volume24H = parseFloat(data.volume24H || 0);
+      const change = parseFloat(data.priceChangePercentage24H || 0);
+      const holders = parseInt(data.holders || 0);
 
-      if (!isNaN(ath)) {
-        animateValue("ath", 0, ath, 1500, "$");
-      }
-
-      if (!isNaN(ageUnix)) {
-        const nowUnix = Math.floor(Date.now() / 1000);
-        const ageInDays = Math.floor((nowUnix - ageUnix) / (60 * 60 * 24));
-        document.getElementById("age").textContent = ageInDays + "d";
-      }
+      animateValue("price", 0, price, 1500);
+      animateValue("marketCap", 0, marketCap, 1500);
+      animateValue("volume24H", 0, volume24H, 1500, "$", ` (${change.toFixed(2)}%)`);
+      animateValue("holders", 0, holders, 1500);
     })
     .catch(err => {
-      console.error("Error fetching token overview:", err);
+      console.error("Blockvision fetch failed:", err);
     });
 
-    // Copy contract address on click with feedback
+    // Copy contract address on click
     const contractAddressDiv = document.getElementById('contractAddress');
-
     contractAddressDiv.addEventListener('click', () => {
       const text = contractAddressDiv.textContent.trim();
       navigator.clipboard.writeText(text).then(() => {
